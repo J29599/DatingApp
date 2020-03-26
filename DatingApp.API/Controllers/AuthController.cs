@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]      //Retorna un JSON con validaciones en el caso de que la request falle
     public class AuthController : ControllerBase
