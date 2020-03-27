@@ -33,7 +33,7 @@ namespace DatingApp.API.Controllers
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
             if (await this._repo.UserExists(userForRegisterDto.Username))
-                return BadRequest("userForRegisterDto already exists");
+                return BadRequest("Username already exists");
 
             var userTocreate = new User
             {
