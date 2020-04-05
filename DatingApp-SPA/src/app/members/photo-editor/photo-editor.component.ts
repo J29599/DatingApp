@@ -36,13 +36,13 @@ export class PhotoEditorComponent implements OnInit {
       url: this.baseUrl + 'user/' + this.authService.decodedToken.nameid + '/photo',
       authToken: 'Bearer ' + localStorage.getItem('token'),
       isHTML5: true,
-      allowedFileType: ['image'], 
+      allowedFileType: ['image'],
       removeAfterUpload: true,
       autoUpload: false,
       maxFileSize: 10 * 1024 * 1024
     });
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
-    this.uploader.onProgressItem = (progress: any) => this.changeDetector.detectChanges(); 
+    this.uploader.onProgressItem = (progress: any) => this.changeDetector.detectChanges();
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       if (response) {
         const res: Photo = JSON.parse(response);
@@ -54,6 +54,11 @@ export class PhotoEditorComponent implements OnInit {
           isMain: res.isMain
         };
         this.photos.push(photo);
+        if (photo.isMain) {
+          this.authService.changeMemberPhoto(photo.url);
+          this.authService.currentUser.photoUrl = photo.url;
+          localStorage.setItem('user', JSON.stringify(this.authService.currentUser));
+        }
       }
     }
 
@@ -68,12 +73,12 @@ export class PhotoEditorComponent implements OnInit {
       this.authService.currentUser.photoUrl = photo.url;
       localStorage.setItem('user', JSON.stringify(this.authService.currentUser));
     },
-    error => {
-      this.alertify.error(error);
-    });
+      error => {
+        this.alertify.error(error);
+      });
   }
 
-  deletePhoto(id: number){
+  deletePhoto(id: number) {
     this.alertify.confirm('Are you sure you want to delete this photo ?', () => {
       this.userService.deletePhoto(this.authService.decodedToken.nameid, id).subscribe(() => {
         this.photos.splice(this.photos.findIndex(p => p.id === id), 1);
